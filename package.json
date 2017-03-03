@@ -1,0 +1,20 @@
+{
+  "name": "@npm-wearetriple/meister-plugin-multisource",
+  "version": "1.0.0",
+  "description": "Meister plugin for having multiple sources in one item",
+  "main": "dist/MultiSource.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "meister",
+    "video",
+    "plugin"
+  ],
+  "author": "Triple",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@npm-wearetriple/js-dev": "^2.3.3",
+    "gulp": "^3.9.1"
+  }
+}
