@@ -4,7 +4,7 @@ class MultiSource extends Meister.ParserPlugin {
         return 'MultiSource';
     }
 
-    isItemSupported(item) {
+    isItemSupported(item) { // eslint-disable-line
         return new Promise((resolve) => {
             if (item.type !== 'multi-source') {
                 return resolve({
@@ -19,10 +19,10 @@ class MultiSource extends Meister.ParserPlugin {
         });
     }
 
-    restructureItems(sources, hasDRM = false) {
+    restructureItems(sources, hasDRM = false) { // eslint-disable-line
         const restructedItems = [];
 
-        for (let i = 0; i < sources.length; i++) {
+        for (let i = 0; i < sources.length; i += 1) {
             const source = sources[i];
 
             const sourceHasDRM = Object.prototype.hasOwnProperty.call(source, 'drm');
@@ -48,7 +48,7 @@ class MultiSource extends Meister.ParserPlugin {
                 return item;
             }
 
-            this.meister.error(`Could not find plugin to play type: '${item.type}'.`, 'MLTSRC-0001', { title: 'Unable to play content.'});
+            this.meister.error(`Could not find plugin to play type: '${item.type}'.`, 'MLTSRC-0001', { title: 'Unable to play content.' });
             return null;
         });
     }
