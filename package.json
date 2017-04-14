@@ -1,16 +1,17 @@
 {
-  "name": "@npm-wearetriple/meister-plugin-multisource",
-  "version": "1.0.0",
+  "name": "meister-plugin-multisource",
+  "version": "5.0.0",
   "description": "Meister plugin for having multiple sources in one item",
   "main": "dist/MultiSource.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "keywords": [
     "meister",
     "video",
     "plugin"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/meisterplayer/parser-multisource.git"
+  },
   "author": "Triple",
   "license": "Apache-2.0",
   "dependencies": {},
