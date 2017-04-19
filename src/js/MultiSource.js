@@ -74,4 +74,5 @@ class MultiSource extends Meister.ParserPlugin {
 }
 
 Meister.registerPlugin(MultiSource.pluginName, MultiSource);
+Meister.registerPlugin('multisource', MultiSource);
 export default MultiSource;
