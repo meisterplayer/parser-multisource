@@ -1,5 +1,5 @@
 {
-  "name": "meister-plugin-multisource",
+  "name": "@meisterplayer/plugin-multisource",
   "version": "5.0.1",
   "description": "Meister plugin for having multiple sources in one item",
   "main": "dist/MultiSource.js",
