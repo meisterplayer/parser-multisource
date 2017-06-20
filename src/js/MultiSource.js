@@ -54,6 +54,8 @@ class MultiSource extends Meister.ParserPlugin {
     }
 
     process(item) {
+        this.currentItem = item;
+
         return new Promise((resolve, reject) => {
             const hasDRM = typeof item.drmConfig === 'object';
             item.sources = this.restructureItems(item.sources, hasDRM); // eslint-disable-line
@@ -66,10 +68,29 @@ class MultiSource extends Meister.ParserPlugin {
                         newItem.metadata = item.metadata; // eslint-disable-line
                     }
 
+                    this.on('playerError', this.onPlayerError.bind(this));
+
                     resolve(newItem);
                 }
             });
         });
+    }
+
+    onPlayerError() {
+        // Unload our previous item.
+        super.unload();
+
+        // We can remove the first item in our sources since it's not able to play.
+        const removedItem = this.currentItem.sources.shift();
+
+        // Make sure we do have sources to play.
+        if (!this.currentItem.sources.length) return;
+
+        console.warn(`${MultiSource.pluginName}: Item '${removedItem.type}' ran into an error while playing. Switching items for optimal experience.`);
+
+        // Now retry the whole flow.
+        this.meister.setItem(this.currentItem);
+        this.meister.load();
     }
 }
 
