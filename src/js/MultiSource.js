@@ -56,6 +56,11 @@ class MultiSource extends Meister.ParserPlugin {
     process(item) {
         this.currentItem = item;
 
+        // Set default config
+        if (typeof this.currentItem.switchItemOnError === 'undefined') {
+            this.currentItem.switchItemOnError = true;
+        }
+
         return new Promise((resolve, reject) => {
             const hasDRM = typeof item.drmConfig === 'object';
             item.sources = this.restructureItems(item.sources, hasDRM); // eslint-disable-line
@@ -68,7 +73,9 @@ class MultiSource extends Meister.ParserPlugin {
                         newItem.metadata = item.metadata; // eslint-disable-line
                     }
 
-                    this.on('playerError', this.onPlayerError.bind(this));
+                    if (this.currentItem.switchItemOnError) {
+                        this.on('playerError', this.onPlayerError.bind(this));
+                    }
 
                     resolve(newItem);
                 }
