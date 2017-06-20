@@ -83,3 +83,21 @@ meisterPlayer.setItem({
 
 meisterPlayer.load();
 ```
+
+### switchItemOnError *[Boolean]* (default: true) ###
+
+Goes to the next item in the 'sources' array when the current item has thrown an error. (NOT_FOUND, CODEC_ERRORS, etc) 
+This can be usefull for codecs that cannot be determined if it can play on the current device.
+Multisource will switch out the item with a new item so playback can continue.
+
+Example:
+
+``` JavaScript
+meisterPlayer.setItem({
+    sources: [ ... ],
+    type: 'multi-source',
+    switchItemOnError: false, // Will stop playback after an fatal error occured.
+});
+```
+
+
