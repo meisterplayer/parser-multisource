@@ -101,6 +101,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -178,6 +180,17 @@ var MultiSource = function (_Meister$ParserPlugin) {
         value: function process(item) {
             var _this3 = this;
 
+            if (item.src && !item.sources) {
+                item.sources = item.src;
+            }
+
+            this.currentItem = item;
+
+            // Set default config
+            if (typeof this.currentItem.switchItemOnError === 'undefined') {
+                this.currentItem.switchItemOnError = true;
+            }
+
             return new Promise(function (resolve, reject) {
                 var hasDRM = _typeof(item.drmConfig) === 'object';
                 item.sources = _this3.restructureItems(item.sources, hasDRM); // eslint-disable-line
@@ -190,10 +203,32 @@ var MultiSource = function (_Meister$ParserPlugin) {
                             newItem.metadata = item.metadata; // eslint-disable-line
                         }
 
+                        if (_this3.currentItem.switchItemOnError) {
+                            _this3.on('playerError', _this3.onPlayerError.bind(_this3));
+                        }
+
                         resolve(newItem);
                     }
                 });
             });
+        }
+    }, {
+        key: 'onPlayerError',
+        value: function onPlayerError() {
+            // Unload our previous item.
+            _get(MultiSource.prototype.__proto__ || Object.getPrototypeOf(MultiSource.prototype), 'unload', this).call(this);
+
+            // We can remove the first item in our sources since it's not able to play.
+            var removedItem = this.currentItem.sources.shift();
+
+            // Make sure we do have sources to play.
+            if (!this.currentItem.sources.length) return;
+
+            console.warn(MultiSource.pluginName + ': Item \'' + removedItem.type + '\' ran into an error while playing. Switching items for optimal experience.');
+
+            // Now retry the whole flow.
+            this.meister.setItem(this.currentItem);
+            this.meister.load();
         }
     }], [{
         key: 'pluginName',
