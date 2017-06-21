@@ -54,6 +54,10 @@ class MultiSource extends Meister.ParserPlugin {
     }
 
     process(item) {
+        if (item.src && !item.sources) {
+            item.sources = item.src;
+        }
+
         this.currentItem = item;
 
         // Set default config
