@@ -1,7 +1,13 @@
+import packageJson from '../../package.json';
+
 class MultiSource extends Meister.ParserPlugin {
 
     static get pluginName() {
         return 'MultiSource';
+    }
+
+    static get pluginVersion() {
+        return packageJson.version;
     }
 
     isItemSupported(item) { // eslint-disable-line
