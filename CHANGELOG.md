@@ -1,3 +1,13 @@
+<a name="5.2.0"></a>
+# [5.2.0](https://github.com/meisterplayer/parser-multisource/compare/v5.1.0...v5.2.0) (2017-06-27)
+
+
+### Features
+
+* **pluginVersion:** Add pluginVersion to class ([16dec64](https://github.com/meisterplayer/parser-multisource/commit/16dec64))
+
+
+
 <a name="5.1.0"></a>
 # 5.1.0 (2017-06-21)
 
