@@ -61,6 +61,7 @@ class MultiSource extends Meister.ParserPlugin {
 
     process(item) {
         if (item.src && !item.sources) {
+            // eslint-disable-next-line no-param-reassign
             item.sources = item.src;
         }
 
