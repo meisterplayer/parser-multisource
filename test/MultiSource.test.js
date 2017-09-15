@@ -13,11 +13,3 @@ describe('MultiSource class', () => {
         expect(MultiSource.pluginVersion).toMatch(/\d+\.\d+\.\d+/);
     });
 });
-
-describe('The rest of the test suite', () => {
-    test('It should be written', () => {
-        const test = { testsWritten: false };
-
-        expect(test).toEqual({ testsWritten: true });
-    });
-});
