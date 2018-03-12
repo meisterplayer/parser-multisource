@@ -1,6 +1,13 @@
 import packageJson from '../../package.json';
 
 class MultiSource extends Meister.ParserPlugin {
+    constructor(config, meister) {
+        super(config, meister);
+
+        // Keep track when a successful play has been done.
+        // This way we can prevent multisource from loading a new item in.
+        this.successfulPlayed = false;
+    }
 
     static get pluginName() {
         return 'MultiSource';
@@ -66,10 +73,15 @@ class MultiSource extends Meister.ParserPlugin {
         }
 
         this.currentItem = item;
+        this.successfulPlayed = false;
 
         // Set default config
         if (typeof this.currentItem.switchItemOnError === 'undefined') {
             this.currentItem.switchItemOnError = true;
+        }
+
+        if (typeof this.currentItem.disableFallbackAfterSuccess === 'undefined') {
+            this.currentItem.disableFallbackAfterSuccess = true;
         }
 
         return new Promise((resolve, reject) => {
@@ -86,12 +98,20 @@ class MultiSource extends Meister.ParserPlugin {
 
                     if (this.currentItem.switchItemOnError) {
                         this.on('playerError', this.onPlayerError.bind(this));
+
+                        if (this.currentItem.disableFallbackAfterSuccess) {
+                            this.on('playerPlaying', this.onPlayerPlaying.bind(this));
+                        }
                     }
 
                     resolve(newItem);
                 }
             });
         });
+    }
+
+    onPlayerPlaying() {
+        this.successfulPlayed = true;
     }
 
     onPlayerError() {
@@ -103,6 +123,7 @@ class MultiSource extends Meister.ParserPlugin {
 
         // Make sure we do have sources to play.
         if (!this.currentItem.sources.length) return;
+        if (this.successfulPlayed) return;
 
         console.warn(`${MultiSource.pluginName}: Item '${removedItem.type}' ran into an error while playing. Switching items for optimal experience.`);
 
