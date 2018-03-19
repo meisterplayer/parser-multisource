@@ -118,10 +118,15 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var MultiSource = function (_Meister$ParserPlugin) {
     _inherits(MultiSource, _Meister$ParserPlugin);
 
-    function MultiSource() {
+    function MultiSource(config, meister) {
         _classCallCheck(this, MultiSource);
 
-        return _possibleConstructorReturn(this, (MultiSource.__proto__ || Object.getPrototypeOf(MultiSource)).apply(this, arguments));
+        // Keep track when a successful play has been done.
+        // This way we can prevent multisource from loading a new item in.
+        var _this = _possibleConstructorReturn(this, (MultiSource.__proto__ || Object.getPrototypeOf(MultiSource)).call(this, config, meister));
+
+        _this.successfulPlayed = false;
+        return _this;
     }
 
     _createClass(MultiSource, [{
@@ -187,14 +192,20 @@ var MultiSource = function (_Meister$ParserPlugin) {
             var _this3 = this;
 
             if (item.src && !item.sources) {
+                // eslint-disable-next-line no-param-reassign
                 item.sources = item.src;
             }
 
             this.currentItem = item;
+            this.successfulPlayed = false;
 
             // Set default config
             if (typeof this.currentItem.switchItemOnError === 'undefined') {
                 this.currentItem.switchItemOnError = true;
+            }
+
+            if (typeof this.currentItem.disableFallbackAfterSuccess === 'undefined') {
+                this.currentItem.disableFallbackAfterSuccess = true;
             }
 
             return new Promise(function (resolve, reject) {
@@ -211,12 +222,21 @@ var MultiSource = function (_Meister$ParserPlugin) {
 
                         if (_this3.currentItem.switchItemOnError) {
                             _this3.on('playerError', _this3.onPlayerError.bind(_this3));
+
+                            if (_this3.currentItem.disableFallbackAfterSuccess) {
+                                _this3.on('playerPlaying', _this3.onPlayerPlaying.bind(_this3));
+                            }
                         }
 
                         resolve(newItem);
                     }
                 });
             });
+        }
+    }, {
+        key: 'onPlayerPlaying',
+        value: function onPlayerPlaying() {
+            this.successfulPlayed = true;
         }
     }, {
         key: 'onPlayerError',
@@ -229,6 +249,7 @@ var MultiSource = function (_Meister$ParserPlugin) {
 
             // Make sure we do have sources to play.
             if (!this.currentItem.sources.length) return;
+            if (this.successfulPlayed) return;
 
             console.warn(MultiSource.pluginName + ': Item \'' + removedItem.type + '\' ran into an error while playing. Switching items for optimal experience.');
 
@@ -261,7 +282,7 @@ exports.default = MultiSource;
 
 module.exports = {
 	"name": "@meisterplayer/plugin-multisource",
-	"version": "5.2.0",
+	"version": "5.3.0",
 	"description": "Meister plugin for having multiple sources in one item",
 	"main": "dist/MultiSource.js",
 	"keywords": [
@@ -273,14 +294,23 @@ module.exports = {
 		"type": "git",
 		"url": "https://github.com/meisterplayer/parser-multisource.git"
 	},
+	"scripts": {
+		"lint": "eslint ./src/js",
+		"test": "jest",
+		"test:coverage": "jest --coverage",
+		"build": "gulp build",
+		"dist": "gulp build:min && gulp build:dist"
+	},
 	"author": "Triple",
 	"license": "Apache-2.0",
 	"devDependencies": {
-		"meister-gulp-webpack-tasks": "^1.0.6",
-		"meister-js-dev": "^3.1.0",
+		"@meisterplayer/meister-mock": "^1.0.0",
 		"babel-preset-es2015": "^6.24.0",
 		"babel-preset-es2017": "^6.22.0",
-		"gulp": "^3.9.1"
+		"gulp": "^3.9.1",
+		"jest": "^20.0.4",
+		"meister-gulp-webpack-tasks": "^1.0.6",
+		"meister-js-dev": "^3.1.0"
 	}
 };
 

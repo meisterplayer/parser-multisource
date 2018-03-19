@@ -1,3 +1,13 @@
+<a name="5.3.0"></a>
+# [5.3.0](https://github.com/meisterplayer/parser-multisource/compare/v5.2.0...v5.3.0) (2018-03-19)
+
+
+### Features
+
+* **error:** Allow disabling of switching when a successful played item has been found ([0e22325](https://github.com/meisterplayer/parser-multisource/commit/0e22325))
+
+
+
 <a name="5.2.0"></a>
 # [5.2.0](https://github.com/meisterplayer/parser-multisource/compare/v5.1.0...v5.2.0) (2017-06-27)
 
